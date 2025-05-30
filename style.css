@@ -1,20 +1,21 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f7fafd;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px 10px;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f6f9fc;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 40px;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 h2 {
@@ -25,66 +26,63 @@ h2 {
 .form-group {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 15px;
 }
 
 .form-group label {
-    width: 110px;
+    flex: 1;
+    margin-right: 10px;
+    font-weight: 500;
 }
 
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"],
 .form-group input[type="date"] {
-    flex: 1;
-    padding: 8px 10px;
+    flex: 2;
+    padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    outline: none;
 }
 
-.checkbox-container {
+.form-group.checkbox {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
 }
 
-.checkbox-container input {
-    margin-right: 8px;
+.form-group.checkbox input {
+    margin-right: 10px;
 }
 
-.submit-btn {
+button[type="submit"] {
     background-color: orange;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 20px;
     width: 100%;
-    border-radius: 8px;
+    font-size: 16px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
 }
 
 .entries-container {
-    background: white;
+    background: #fff;
+    margin-top: 30px;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
 th,
 td {
-    padding: 12px;
+    padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f3f4f6;
 }
