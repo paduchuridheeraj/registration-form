@@ -2,9 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registration Form</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f6f9fc;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      flex: 1;
+      margin-right: 10px;
+      font-weight: 500;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="date"] {
+      flex: 2;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .form-group.checkbox {
+      display: flex;
+      align-items: center;
+    }
+
+    .form-group.checkbox input {
+      margin-right: 10px;
+    }
+
+    button[type="submit"] {
+      background-color: orange;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .entries-container {
+      background: #fff;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -56,6 +144,75 @@
     </div>
   </div>
 
-  <script src="index.js"></script>
+  <script>
+    const form = document.getElementById("registrationForm");
+    const tableBody = document.querySelector("#entriesTable tbody");
+
+    function getEntries() {
+      const entries = localStorage.getItem("entries");
+      return entries ? JSON.parse(entries) : [];
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem("entries", JSON.stringify(entries));
+    }
+
+    function showEntries() {
+      const entries = getEntries();
+      tableBody.innerHTML = "";
+
+      entries.forEach((entry) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${entry.name}</td>
+          <td>${entry.email}</td>
+          <td>${entry.password}</td>
+          <td>${entry.dob}</td>
+          <td>${entry.acceptTerms ? "Yes" : "No"}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function isValidDob(dob) {
+      const birthDate = new Date(dob);
+      const today = new Date();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      const dayDiff = today.getDate() - birthDate.getDate();
+
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      return age >= 18 && age <= 55;
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const dob = document.getElementById("dob").value;
+      const acceptTerms = document.getElementById("acceptTerms").checked;
+
+      if (!isValidDob(dob)) {
+        alert("Age must be between 18 and 55 years.");
+        return;
+      }
+
+      const newEntry = { name, email, password, dob, acceptTerms };
+
+      const entries = getEntries();
+      entries.push(newEntry);
+      saveEntries(entries);
+      showEntries();
+      form.reset();
+    });
+
+    document.addEventListener("DOMContentLoaded", showEntries);
+  </script>
 </body>
 </html>
