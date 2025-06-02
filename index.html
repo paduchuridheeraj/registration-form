@@ -2,27 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registration Form</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f6f9fc;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
     }
 
     .container {
-      max-width: 600px;
+      width: 600px;
       margin: 40px auto;
-      padding: 20px;
     }
 
     form {
       background: #fff;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     h2 {
@@ -37,20 +33,16 @@
     }
 
     .form-group label {
-      flex: 1;
+      width: 150px;
       margin-right: 10px;
-      font-weight: 500;
+      font-weight: bold;
     }
 
-    .form-group input[type="text"],
-    .form-group input[type="email"],
-    .form-group input[type="password"],
-    .form-group input[type="date"] {
-      flex: 2;
-      padding: 10px;
-      border-radius: 8px;
+    .form-group input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      outline: none;
     }
 
     .form-group.checkbox {
@@ -59,37 +51,41 @@
     }
 
     .form-group.checkbox input {
+      width: auto;
       margin-right: 10px;
     }
 
-    button[type="submit"] {
-      background-color: orange;
-      color: white;
-      border: none;
-      padding: 12px 20px;
+    .form-group.checkbox label {
+      width: auto;
+    }
+
+    button {
       width: 100%;
+      padding: 12px;
+      background-color: orange;
+      border: none;
+      color: white;
       font-size: 16px;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .entries-container {
+    .entries {
       background: #fff;
-      margin-top: 30px;
       padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      margin-top: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
     }
 
     th, td {
-      padding: 10px;
       text-align: left;
+      padding: 10px;
       border-bottom: 1px solid #ddd;
     }
   </style>
@@ -98,36 +94,30 @@
   <div class="container">
     <form id="registrationForm">
       <h2>Registration Form</h2>
-
       <div class="form-group">
         <label for="name">Name</label>
         <input type="text" id="name" placeholder="Enter your name" required />
       </div>
-
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="Enter your email ID" required />
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="Enter your password" required />
       </div>
-
       <div class="form-group">
         <label for="dob">Date of Birth</label>
         <input type="date" id="dob" required />
       </div>
-
       <div class="form-group checkbox">
         <input type="checkbox" id="acceptTerms" required />
         <label for="acceptTerms">Accept Terms & Conditions</label>
       </div>
-
       <button type="submit">Submit</button>
     </form>
 
-    <div class="entries-container">
+    <div class="entries">
       <h2>Entries</h2>
       <table id="entriesTable">
         <thead>
@@ -139,7 +129,9 @@
             <th>Accepted terms?</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <!-- Dynamic entries go here -->
+        </tbody>
       </table>
     </div>
   </div>
@@ -148,63 +140,61 @@
     const form = document.getElementById("registrationForm");
     const tableBody = document.querySelector("#entriesTable tbody");
 
+    // Get stored entries from localStorage
     function getEntries() {
-      const entries = localStorage.getItem("entries");
+      const entries = localStorage.getItem("user-entries");
       return entries ? JSON.parse(entries) : [];
     }
 
+    // Save entries to localStorage
     function saveEntries(entries) {
-      localStorage.setItem("entries", JSON.stringify(entries));
+      localStorage.setItem("user-entries", JSON.stringify(entries));
     }
 
+    // Display entries in the table
     function showEntries() {
       const entries = getEntries();
       tableBody.innerHTML = "";
-
-      entries.forEach((entry) => {
+      entries.forEach(entry => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${entry.name}</td>
           <td>${entry.email}</td>
           <td>${entry.password}</td>
           <td>${entry.dob}</td>
-          <td>${entry.acceptTerms ? "Yes" : "No"}</td>
+          <td>${entry.accepted ? "Yes" : "No"}</td>
         `;
         tableBody.appendChild(row);
       });
     }
 
-    function isValidDob(dob) {
+    // Validate age
+    function isValidAge(dob) {
       const birthDate = new Date(dob);
       const today = new Date();
-
       let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      const dayDiff = today.getDate() - birthDate.getDate();
-
-      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-
       return age >= 18 && age <= 55;
     }
 
-    form.addEventListener("submit", function (e) {
+    // On form submit
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const password = document.getElementById("password").value;
       const dob = document.getElementById("dob").value;
-      const acceptTerms = document.getElementById("acceptTerms").checked;
+      const accepted = document.getElementById("acceptTerms").checked;
 
-      if (!isValidDob(dob)) {
-        alert("Age must be between 18 and 55 years.");
+      if (!isValidAge(dob)) {
+        alert("Age must be between 18 and 55.");
         return;
       }
 
-      const newEntry = { name, email, password, dob, acceptTerms };
-
+      const newEntry = { name, email, password, dob, accepted };
       const entries = getEntries();
       entries.push(newEntry);
       saveEntries(entries);
@@ -212,6 +202,7 @@
       form.reset();
     });
 
+    // Show stored entries on page load
     document.addEventListener("DOMContentLoaded", showEntries);
   </script>
 </body>
